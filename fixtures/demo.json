@@ -1,0 +1,89 @@
+{
+  "id": "retail-growth",
+  "category": "growth",
+  "dataset_kind": "synthetic",
+  "goal": "For the synthetic retail business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+  "fixture_plan": [
+    {
+      "id": "market",
+      "objective": "Find market caveats",
+      "capability": "web",
+      "dependencies": [],
+      "tool": "web.search",
+      "arguments": {
+        "query": "retail market growth"
+      }
+    },
+    {
+      "id": "previous",
+      "objective": "Read previous period metrics",
+      "capability": "sql",
+      "dependencies": [],
+      "tool": "sql.query",
+      "arguments": {
+        "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+        "params": {
+          "domain": "retail"
+        }
+      }
+    },
+    {
+      "id": "current",
+      "objective": "Read current period metrics",
+      "capability": "sql",
+      "dependencies": [],
+      "tool": "sql.query",
+      "arguments": {
+        "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+        "params": {
+          "domain": "retail"
+        }
+      }
+    },
+    {
+      "id": "calculation",
+      "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+      "capability": "code",
+      "dependencies": [
+        "previous",
+        "current"
+      ],
+      "tool": "code.calculate",
+      "arguments": {
+        "expression": "(current - previous) / previous * 100",
+        "variables": {
+          "current": {
+            "$ref": "current.rows.0.value"
+          },
+          "previous": {
+            "$ref": "previous.rows.0.value"
+          }
+        }
+      }
+    },
+    {
+      "id": "policy",
+      "objective": "Retrieve independent policy and operational caveats",
+      "capability": "rag",
+      "dependencies": [
+        "market"
+      ],
+      "tool": "rag.search",
+      "arguments": {
+        "query": "retail policy operations"
+      }
+    }
+  ],
+  "gold": {
+    "expected_values": [
+      30.0
+    ],
+    "min_sources": 2,
+    "relevant_tools": [
+      "web.search",
+      "rag.search",
+      "sql.query",
+      "code.calculate"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+name: agentforge
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: agentforge
+      POSTGRES_PASSWORD: ${AF_POSTGRES_PASSWORD:-agentforge_dev}
+      POSTGRES_DB: agentforge
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentforge -d agentforge"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  app:
+    profiles: ["app"]
+    build: .
+    environment:
+      AF_DATABASE_URL: postgresql://agentforge:${AF_POSTGRES_PASSWORD:-agentforge_dev}@postgres:5432/agentforge
+      AF_DATA_DIR: /app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - appdata:/app/data
+    command: ["run"]
+volumes:
+  pgdata:
+  appdata:

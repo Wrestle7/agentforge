@@ -1,0 +1,46 @@
+{
+  "full": {
+    "n": 60,
+    "task_success": 1,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 5.5,
+    "invalid_tool_calls": 0,
+    "trajectory_length": 21.5,
+    "execution_rounds": 5.5,
+    "latency_ms": 140.79076503403485,
+    "token_cost": 0
+  },
+  "react": {
+    "n": 60,
+    "task_success": 1,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 5.5,
+    "invalid_tool_calls": 0,
+    "trajectory_length": 9.5,
+    "execution_rounds": 5.5,
+    "latency_ms": 92.30372159508988,
+    "token_cost": 0
+  },
+  "no_critic": {
+    "n": 60,
+    "task_success": 1,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 5.5,
+    "invalid_tool_calls": 0,
+    "trajectory_length": 16,
+    "execution_rounds": 5.5,
+    "latency_ms": 98.0352316730811,
+    "token_cost": 0
+  },
+  "no_memory": {
+    "n": 60,
+    "task_success": 1,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 5.5,
+    "invalid_tool_calls": 0,
+    "trajectory_length": 21.5,
+    "execution_rounds": 5.5,
+    "latency_ms": 122.47575000316526,
+    "token_cost": 0
+  }
+}

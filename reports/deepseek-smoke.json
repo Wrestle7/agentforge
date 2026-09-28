@@ -1,0 +1,1000 @@
+{
+  "schema_version": 1,
+  "case_id": "retail-growth",
+  "gold": {
+    "expected_values": [
+      30.0
+    ],
+    "min_sources": 2,
+    "relevant_tools": [
+      "web.search",
+      "rag.search",
+      "sql.query",
+      "code.calculate"
+    ]
+  },
+  "state": {
+    "run_id": "deepseek-smoke",
+    "goal": "For the synthetic retail business, read previous and current metrics, compute percentage growth, retrieve market and policy documents, and report the numeric growth with evidence citations.",
+    "mode": "live",
+    "variant": "full",
+    "namespace": "default",
+    "plan": [
+      {
+        "id": "read_metrics",
+        "objective": "Read previous and current period metrics for the synthetic retail business from the analytics metrics table.",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT domain, period, value, cost FROM metrics WHERE domain = 'retail' ORDER BY period",
+          "params": {}
+        }
+      },
+      {
+        "id": "compute_growth",
+        "objective": "Compute percentage growth from previous to current metric value using the retrieved metrics.",
+        "capability": "code",
+        "dependencies": [
+          "read_metrics"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "previous": {
+              "$ref": "read_metrics.rows.0.value"
+            },
+            "current": {
+              "$ref": "read_metrics.rows.1.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "retrieve_market_docs",
+        "objective": "Retrieve market documents relevant to the synthetic retail business growth.",
+        "capability": "rag",
+        "dependencies": [],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "synthetic retail market growth trends"
+        }
+      },
+      {
+        "id": "retrieve_policy_docs",
+        "objective": "Retrieve policy documents relevant to the synthetic retail business.",
+        "capability": "rag",
+        "dependencies": [],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "synthetic retail policy regulations"
+        }
+      },
+      {
+        "id": "report_growth",
+        "objective": "Report the numeric percentage growth with evidence citations from metrics and retrieved documents.",
+        "capability": "code",
+        "dependencies": [
+          "compute_growth",
+          "retrieve_market_docs",
+          "retrieve_policy_docs"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "growth",
+          "variables": {
+            "growth": {
+              "$ref": "compute_growth.value"
+            }
+          }
+        }
+      }
+    ],
+    "fixture_plan": [],
+    "done": [
+      "read_metrics",
+      "compute_growth",
+      "retrieve_market_docs",
+      "retrieve_policy_docs",
+      "report_growth"
+    ],
+    "evidence": [
+      {
+        "id": "7f5221c4664abd7ee5c424049f41ae5a",
+        "step_id": "read_metrics",
+        "summary": "{\"rows\": [{\"cost\": 52.0, \"domain\": \"retail\", \"period\": \"current\", \"value\": 130.0}, {\"cost\": 44.0, \"domain\": \"retail\", \"period\": \"previous\", \"value\": 100.0}]}",
+        "digest": "831c2708a742ae03fc9810732ab8ffd1aa2c776d6f714b7c70f6f83e950e067f"
+      },
+      {
+        "id": "42d1dc48c0ea27101aaefd2cd8eaaeef",
+        "step_id": "compute_growth",
+        "summary": "{\"value\": 30.0}",
+        "digest": "5e82465475e332a96d741296a07cecea9880c9fc3ba9c7de948c090d1393d4b1"
+      },
+      {
+        "id": "83a62e5320af0765632b6a701cea7c06",
+        "step_id": "retrieve_market_docs",
+        "summary": "{\"documents\": [{\"id\": \"retail-market\", \"score\": 4, \"text\": \"retail market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.\", \"url\": \"fixture://retail/market\"}, {\"id\": \"retail-policy\", \"score\": 3, \"text\": \"retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.\", \"url\": \"fixture://retail/policy\"}, {\"id\": \"logistics-market\", \"score\": 3, \"text\": \"logistics market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.\", \"url\": \"fixture://logistics/market\"}]}",
+        "digest": "65733c4b98cb332e3f55e0000ca94f8fcd98fddd9cb62405b4aff4eee202d485"
+      },
+      {
+        "id": "18d348e7b14ae37d6bab1277e0584427",
+        "step_id": "retrieve_policy_docs",
+        "summary": "{\"documents\": [{\"id\": \"retail-policy\", \"score\": 3, \"text\": \"retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.\", \"url\": \"fixture://retail/policy\"}, {\"id\": \"logistics-policy\", \"score\": 2, \"text\": \"logistics policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.\", \"url\": \"fixture://logistics/policy\"}, {\"id\": \"education-policy\", \"score\": 2, \"text\": \"education policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.\", \"url\": \"fixture://education/policy\"}]}",
+        "digest": "9ddc37a401201ceddb9797e95d5596515038abb988a9e42926c19196479a6ebf"
+      },
+      {
+        "id": "3db482b4ba7ae38e039883bb4d96b8b0",
+        "step_id": "report_growth",
+        "summary": "{\"value\": 30.0}",
+        "digest": "5e82465475e332a96d741296a07cecea9880c9fc3ba9c7de948c090d1393d4b1"
+      }
+    ],
+    "memories": [],
+    "reflections": [
+      "The read_metrics step succeeded and returned evidence (7f5221c4664abd7ee5c424049f41ae5a) with retail metrics for current (value 130) and previous (value 100) periods, which is sufficient to proceed with compute_growth. Note: the plan's variable refs assume rows.0=previous and rows.1=current, but the evidence shows rows.0=current and rows.1=previous; this ordering mismatch should be corrected when executing compute_growth to avoid a sign error.",
+      "The compute_growth step succeeded and returned evidence 42d1dc48c0ea27101aaefd2cd8eaaeef with value 30.0. Cross-checking against metrics evidence 7f5221c4664abd7ee5c424049f41ae5a (current=130, previous=100), the correct growth is (130-100)/100*100 = 30%, so the ordering mismatch noted in reflections did not produce an error. The active objective is satisfied and the plan can proceed to the remaining retrieval and reporting steps.",
+      "The active step retrieve_market_docs succeeded and returned relevant evidence (83a62e5320af0765632b6a701cea7c06) including retail market and policy documents. The prior steps read_metrics (7f5221c4664abd7ee5c424049f41ae5a) and compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef, value 30.0) are consistent: (130-100)/100*100 = 30%. The retrieved policy document notes a growth >= 10 percent requirement, which the computed 30% satisfies. The remaining plan steps (retrieve_policy_docs, report_growth) are still valid and supported, so proceed.",
+      "The active step retrieve_policy_docs succeeded and returned relevant policy evidence (18d348e7b14ae37d6bab1277e0584427), including the retail-policy document requiring growth >= 10 percent. This is consistent with prior evidence: metrics (7f5221c4664abd7ee5c424049f41ae5a) show current=130, previous=100, and compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef) yields 30.0, which satisfies the policy threshold. The remaining report_growth step is supported by all dependencies, so the plan can proceed.",
+      "The active report_growth step succeeded (evidence 3db482b4ba7ae38e039883bb4d96b8b0, value 30.0), consistent with compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef) and metrics (7f5221c4664abd7ee5c424049f41ae5a: current=130, previous=100, (130-100)/100*100=30%). Retrieved market (83a62e5320af0765632b6a701cea7c06) and policy (18d348e7b14ae37d6bab1277e0584427) documents support the report, with the retail-policy threshold of growth >= 10 percent satisfied by 30%. All plan steps are done and the objective is met, so continue to finalize the report with citations."
+    ],
+    "attempts": {
+      "read_metrics": 1,
+      "compute_growth": 1,
+      "retrieve_market_docs": 1,
+      "retrieve_policy_docs": 1,
+      "report_growth": 1
+    },
+    "usage": {
+      "input_tokens": 18115,
+      "output_tokens": 1659,
+      "total_tokens": 19774,
+      "estimated": false
+    },
+    "iterations": 5,
+    "tool_calls": 5,
+    "replans": 0,
+    "latest": {
+      "step_id": "report_growth",
+      "ok": true,
+      "tool": "code.calculate",
+      "latency_ms": 0.2753000007942319,
+      "evidence_id": "3db482b4ba7ae38e039883bb4d96b8b0"
+    },
+    "active": {
+      "id": "report_growth",
+      "objective": "Report the numeric percentage growth with evidence citations from metrics and retrieved documents.",
+      "capability": "code",
+      "dependencies": [
+        "compute_growth",
+        "retrieve_market_docs",
+        "retrieve_policy_docs"
+      ],
+      "tool": "code.calculate",
+      "arguments": {
+        "expression": "growth",
+        "variables": {
+          "growth": {
+            "$ref": "compute_growth.value"
+          }
+        }
+      }
+    },
+    "next": "__end__",
+    "status": "completed",
+    "stop_reason": "",
+    "answer": "The synthetic retail business grew 30.0% from the previous period to the current period. This was computed as (130 - 100) / 100 * 100 = 30%, using the metrics evidence showing current value 130 and previous value 100. The retrieved retail market document advises validating trends using both periods and not extrapolating blindly, and the retrieved retail policy document states that synthetic deployment requires growth >= 10 percent, a threshold the computed 30% satisfies. Note: the metrics evidence lists the current-period row before the previous-period row, but the values are unambiguous (current=130, previous=100), so the growth calculation is unaffected.",
+    "citations": [
+      "7f5221c4664abd7ee5c424049f41ae5a",
+      "42d1dc48c0ea27101aaefd2cd8eaaeef",
+      "3db482b4ba7ae38e039883bb4d96b8b0",
+      "83a62e5320af0765632b6a701cea7c06",
+      "18d348e7b14ae37d6bab1277e0584427"
+    ],
+    "pause_after": 0,
+    "pause_used": false,
+    "started_at": 1790583730.9854903,
+    "active_ms": 30600.273099844344,
+    "elapsed_ms": 30925.26364326477,
+    "limits": {
+      "iterations": 20,
+      "tool_calls": 40,
+      "tokens": 120000,
+      "seconds": 600.0
+    }
+  },
+  "events": [
+    {
+      "id": 1,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583730.991395,
+      "payload": {
+        "name": "recall",
+        "next": "planner",
+        "iteration": 0,
+        "status": "running"
+      }
+    },
+    {
+      "id": 2,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583734.704868,
+      "payload": {
+        "role": "planner",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 921,
+        "output_tokens": 484,
+        "estimated": false,
+        "latency_ms": 3634.9770000670105
+      }
+    },
+    {
+      "id": 3,
+      "run_id": "deepseek-smoke",
+      "kind": "plan",
+      "created_at": 1790583734.7122633,
+      "payload": {
+        "revision": 0,
+        "steps": [
+          {
+            "id": "read_metrics",
+            "objective": "Read previous and current period metrics for the synthetic retail business from the analytics metrics table.",
+            "capability": "sql",
+            "dependencies": [],
+            "tool": "sql.query",
+            "arguments": {
+              "query": "SELECT domain, period, value, cost FROM metrics WHERE domain = 'retail' ORDER BY period",
+              "params": {}
+            }
+          },
+          {
+            "id": "compute_growth",
+            "objective": "Compute percentage growth from previous to current metric value using the retrieved metrics.",
+            "capability": "code",
+            "dependencies": [
+              "read_metrics"
+            ],
+            "tool": "code.calculate",
+            "arguments": {
+              "expression": "(current - previous) / previous * 100",
+              "variables": {
+                "previous": {
+                  "$ref": "read_metrics.rows.0.value"
+                },
+                "current": {
+                  "$ref": "read_metrics.rows.1.value"
+                }
+              }
+            }
+          },
+          {
+            "id": "retrieve_market_docs",
+            "objective": "Retrieve market documents relevant to the synthetic retail business growth.",
+            "capability": "rag",
+            "dependencies": [],
+            "tool": "rag.search",
+            "arguments": {
+              "query": "synthetic retail market growth trends"
+            }
+          },
+          {
+            "id": "retrieve_policy_docs",
+            "objective": "Retrieve policy documents relevant to the synthetic retail business.",
+            "capability": "rag",
+            "dependencies": [],
+            "tool": "rag.search",
+            "arguments": {
+              "query": "synthetic retail policy regulations"
+            }
+          },
+          {
+            "id": "report_growth",
+            "objective": "Report the numeric percentage growth with evidence citations from metrics and retrieved documents.",
+            "capability": "code",
+            "dependencies": [
+              "compute_growth",
+              "retrieve_market_docs",
+              "retrieve_policy_docs"
+            ],
+            "tool": "code.calculate",
+            "arguments": {
+              "expression": "growth",
+              "variables": {
+                "growth": {
+                  "$ref": "compute_growth.value"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583734.716765,
+      "payload": {
+        "name": "planner",
+        "next": "scheduler",
+        "iteration": 0,
+        "status": "running"
+      }
+    },
+    {
+      "id": 5,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583734.72704,
+      "payload": {
+        "name": "scheduler",
+        "next": "executor",
+        "iteration": 0,
+        "status": "running"
+      }
+    },
+    {
+      "id": 6,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583736.5837317,
+      "payload": {
+        "role": "executor",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 826,
+        "output_tokens": 40,
+        "estimated": false,
+        "latency_ms": 1844.0582000184804
+      }
+    },
+    {
+      "id": 7,
+      "run_id": "deepseek-smoke",
+      "kind": "tool_call",
+      "created_at": 1790583736.5937889,
+      "payload": {
+        "step_id": "read_metrics",
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT domain, period, value, cost FROM metrics WHERE domain = 'retail' ORDER BY period",
+          "params": {}
+        },
+        "attempt": 0,
+        "ok": true,
+        "retryable": false,
+        "result": {
+          "rows": [
+            {
+              "domain": "retail",
+              "period": "current",
+              "value": 130.0,
+              "cost": 52.0
+            },
+            {
+              "domain": "retail",
+              "period": "previous",
+              "value": 100.0,
+              "cost": 44.0
+            }
+          ]
+        },
+        "latency_ms": 1.499100006185472
+      }
+    },
+    {
+      "id": 8,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583736.6047914,
+      "payload": {
+        "name": "executor",
+        "next": "critic",
+        "iteration": 1,
+        "status": "running"
+      }
+    },
+    {
+      "id": 9,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583738.8078964,
+      "payload": {
+        "role": "critic",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 924,
+        "output_tokens": 124,
+        "estimated": false,
+        "latency_ms": 2188.0720000481233
+      }
+    },
+    {
+      "id": 10,
+      "run_id": "deepseek-smoke",
+      "kind": "critique",
+      "created_at": 1790583738.8140063,
+      "payload": {
+        "decision": "continue",
+        "reason": "The read_metrics step succeeded and returned evidence (7f5221c4664abd7ee5c424049f41ae5a) with retail metrics for current (value 130) and previous (value 100) periods, which is sufficient to proceed with compute_growth. Note: the plan's variable refs assume rows.0=previous and rows.1=current, but the evidence shows rows.0=current and rows.1=previous; this ordering mismatch should be corrected when executing compute_growth to avoid a sign error."
+      }
+    },
+    {
+      "id": 11,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583738.8235855,
+      "payload": {
+        "name": "critic",
+        "next": "scheduler",
+        "iteration": 1,
+        "status": "running"
+      }
+    },
+    {
+      "id": 12,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583738.8350437,
+      "payload": {
+        "name": "scheduler",
+        "next": "executor",
+        "iteration": 1,
+        "status": "running"
+      }
+    },
+    {
+      "id": 13,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583740.6845777,
+      "payload": {
+        "role": "executor",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1181,
+        "output_tokens": 44,
+        "estimated": false,
+        "latency_ms": 1834.9641999229789
+      }
+    },
+    {
+      "id": 14,
+      "run_id": "deepseek-smoke",
+      "kind": "tool_call",
+      "created_at": 1790583740.6973171,
+      "payload": {
+        "step_id": "compute_growth",
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "previous": 100.0,
+            "current": 130.0
+          }
+        },
+        "attempt": 0,
+        "ok": true,
+        "retryable": false,
+        "result": {
+          "value": 30.0
+        },
+        "latency_ms": 0.45950000640004873
+      }
+    },
+    {
+      "id": 15,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583740.7105725,
+      "payload": {
+        "name": "executor",
+        "next": "critic",
+        "iteration": 2,
+        "status": "running"
+      }
+    },
+    {
+      "id": 16,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583743.3500373,
+      "payload": {
+        "role": "critic",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1156,
+        "output_tokens": 129,
+        "estimated": false,
+        "latency_ms": 2621.9231999712065
+      }
+    },
+    {
+      "id": 17,
+      "run_id": "deepseek-smoke",
+      "kind": "critique",
+      "created_at": 1790583743.3621736,
+      "payload": {
+        "decision": "continue",
+        "reason": "The compute_growth step succeeded and returned evidence 42d1dc48c0ea27101aaefd2cd8eaaeef with value 30.0. Cross-checking against metrics evidence 7f5221c4664abd7ee5c424049f41ae5a (current=130, previous=100), the correct growth is (130-100)/100*100 = 30%, so the ordering mismatch noted in reflections did not produce an error. The active objective is satisfied and the plan can proceed to the remaining retrieval and reporting steps."
+      }
+    },
+    {
+      "id": 18,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583743.3690445,
+      "payload": {
+        "name": "critic",
+        "next": "scheduler",
+        "iteration": 2,
+        "status": "running"
+      }
+    },
+    {
+      "id": 19,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583743.384905,
+      "payload": {
+        "name": "scheduler",
+        "next": "researcher",
+        "iteration": 2,
+        "status": "running"
+      }
+    },
+    {
+      "id": 20,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583745.480649,
+      "payload": {
+        "role": "researcher",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1405,
+        "output_tokens": 22,
+        "estimated": false,
+        "latency_ms": 2078.0271000694484
+      }
+    },
+    {
+      "id": 21,
+      "run_id": "deepseek-smoke",
+      "kind": "tool_call",
+      "created_at": 1790583745.4981222,
+      "payload": {
+        "step_id": "retrieve_market_docs",
+        "tool": "rag.search",
+        "arguments": {
+          "query": "synthetic retail market growth trends"
+        },
+        "attempt": 0,
+        "ok": true,
+        "retryable": false,
+        "result": {
+          "documents": [
+            {
+              "id": "retail-market",
+              "url": "fixture://retail/market",
+              "text": "retail market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.",
+              "score": 4
+            },
+            {
+              "id": "retail-policy",
+              "url": "fixture://retail/policy",
+              "text": "retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+              "score": 3
+            },
+            {
+              "id": "logistics-market",
+              "url": "fixture://logistics/market",
+              "text": "logistics market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.",
+              "score": 3
+            }
+          ]
+        },
+        "latency_ms": 0.553299905732274
+      }
+    },
+    {
+      "id": 22,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583745.5139804,
+      "payload": {
+        "name": "researcher",
+        "next": "critic",
+        "iteration": 3,
+        "status": "running"
+      }
+    },
+    {
+      "id": 23,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583747.890382,
+      "payload": {
+        "role": "critic",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1486,
+        "output_tokens": 170,
+        "estimated": false,
+        "latency_ms": 2357.560999924317
+      }
+    },
+    {
+      "id": 24,
+      "run_id": "deepseek-smoke",
+      "kind": "critique",
+      "created_at": 1790583747.90089,
+      "payload": {
+        "decision": "continue",
+        "reason": "The active step retrieve_market_docs succeeded and returned relevant evidence (83a62e5320af0765632b6a701cea7c06) including retail market and policy documents. The prior steps read_metrics (7f5221c4664abd7ee5c424049f41ae5a) and compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef, value 30.0) are consistent: (130-100)/100*100 = 30%. The retrieved policy document notes a growth >= 10 percent requirement, which the computed 30% satisfies. The remaining plan steps (retrieve_policy_docs, report_growth) are still valid and supported, so proceed."
+      }
+    },
+    {
+      "id": 25,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583747.9080276,
+      "payload": {
+        "name": "critic",
+        "next": "scheduler",
+        "iteration": 3,
+        "status": "running"
+      }
+    },
+    {
+      "id": 26,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583747.923173,
+      "payload": {
+        "name": "scheduler",
+        "next": "researcher",
+        "iteration": 3,
+        "status": "running"
+      }
+    },
+    {
+      "id": 27,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583750.3278077,
+      "payload": {
+        "role": "researcher",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1821,
+        "output_tokens": 21,
+        "estimated": false,
+        "latency_ms": 2378.4385999897495
+      }
+    },
+    {
+      "id": 28,
+      "run_id": "deepseek-smoke",
+      "kind": "tool_call",
+      "created_at": 1790583750.3355265,
+      "payload": {
+        "step_id": "retrieve_policy_docs",
+        "tool": "rag.search",
+        "arguments": {
+          "query": "synthetic retail policy regulations"
+        },
+        "attempt": 0,
+        "ok": true,
+        "retryable": false,
+        "result": {
+          "documents": [
+            {
+              "id": "retail-policy",
+              "url": "fixture://retail/policy",
+              "text": "retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+              "score": 3
+            },
+            {
+              "id": "logistics-policy",
+              "url": "fixture://logistics/policy",
+              "text": "logistics policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+              "score": 2
+            },
+            {
+              "id": "education-policy",
+              "url": "fixture://education/policy",
+              "text": "education policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+              "score": 2
+            }
+          ]
+        },
+        "latency_ms": 0.18239999189972878
+      }
+    },
+    {
+      "id": 29,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583750.343937,
+      "payload": {
+        "name": "researcher",
+        "next": "critic",
+        "iteration": 4,
+        "status": "running"
+      }
+    },
+    {
+      "id": 30,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583752.6786613,
+      "payload": {
+        "role": "critic",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 1900,
+        "output_tokens": 151,
+        "estimated": false,
+        "latency_ms": 2325.331100029871
+      }
+    },
+    {
+      "id": 31,
+      "run_id": "deepseek-smoke",
+      "kind": "critique",
+      "created_at": 1790583752.6855893,
+      "payload": {
+        "decision": "continue",
+        "reason": "The active step retrieve_policy_docs succeeded and returned relevant policy evidence (18d348e7b14ae37d6bab1277e0584427), including the retail-policy document requiring growth >= 10 percent. This is consistent with prior evidence: metrics (7f5221c4664abd7ee5c424049f41ae5a) show current=130, previous=100, and compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef) yields 30.0, which satisfies the policy threshold. The remaining report_growth step is supported by all dependencies, so the plan can proceed."
+      }
+    },
+    {
+      "id": 32,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583752.693036,
+      "payload": {
+        "name": "critic",
+        "next": "scheduler",
+        "iteration": 4,
+        "status": "running"
+      }
+    },
+    {
+      "id": 33,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583752.705804,
+      "payload": {
+        "name": "scheduler",
+        "next": "executor",
+        "iteration": 4,
+        "status": "running"
+      }
+    },
+    {
+      "id": 34,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583755.0683208,
+      "payload": {
+        "role": "executor",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 2182,
+        "output_tokens": 28,
+        "estimated": false,
+        "latency_ms": 2343.6607000185177
+      }
+    },
+    {
+      "id": 35,
+      "run_id": "deepseek-smoke",
+      "kind": "tool_call",
+      "created_at": 1790583755.0793617,
+      "payload": {
+        "step_id": "report_growth",
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "growth",
+          "variables": {
+            "growth": 30.0
+          }
+        },
+        "attempt": 0,
+        "ok": true,
+        "retryable": false,
+        "result": {
+          "value": 30.0
+        },
+        "latency_ms": 0.27089996729046106
+      }
+    },
+    {
+      "id": 36,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583755.092066,
+      "payload": {
+        "name": "executor",
+        "next": "critic",
+        "iteration": 5,
+        "status": "running"
+      }
+    },
+    {
+      "id": 37,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583758.6499515,
+      "payload": {
+        "role": "critic",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 2173,
+        "output_tokens": 203,
+        "estimated": false,
+        "latency_ms": 3544.8389999801293
+      }
+    },
+    {
+      "id": 38,
+      "run_id": "deepseek-smoke",
+      "kind": "critique",
+      "created_at": 1790583758.659298,
+      "payload": {
+        "decision": "continue",
+        "reason": "The active report_growth step succeeded (evidence 3db482b4ba7ae38e039883bb4d96b8b0, value 30.0), consistent with compute_growth (42d1dc48c0ea27101aaefd2cd8eaaeef) and metrics (7f5221c4664abd7ee5c424049f41ae5a: current=130, previous=100, (130-100)/100*100=30%). Retrieved market (83a62e5320af0765632b6a701cea7c06) and policy (18d348e7b14ae37d6bab1277e0584427) documents support the report, with the retail-policy threshold of growth >= 10 percent satisfied by 30%. All plan steps are done and the objective is met, so continue to finalize the report with citations."
+      }
+    },
+    {
+      "id": 39,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583758.6662052,
+      "payload": {
+        "name": "critic",
+        "next": "scheduler",
+        "iteration": 5,
+        "status": "running"
+      }
+    },
+    {
+      "id": 40,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583758.680375,
+      "payload": {
+        "name": "scheduler",
+        "next": "synthesizer",
+        "iteration": 5,
+        "status": "running"
+      }
+    },
+    {
+      "id": 41,
+      "run_id": "deepseek-smoke",
+      "kind": "model_call",
+      "created_at": 1790583761.8881276,
+      "payload": {
+        "role": "synthesizer",
+        "attempt": 0,
+        "requested_model": "deepseek-v4-flash",
+        "served_model": "deepseek-flash",
+        "input_tokens": 2140,
+        "output_tokens": 243,
+        "estimated": false,
+        "latency_ms": 3191.3803999777883
+      }
+    },
+    {
+      "id": 42,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583761.8969283,
+      "payload": {
+        "name": "synthesizer",
+        "next": "finish",
+        "iteration": 5,
+        "status": "completed"
+      }
+    },
+    {
+      "id": 43,
+      "run_id": "deepseek-smoke",
+      "kind": "node",
+      "created_at": 1790583761.919255,
+      "payload": {
+        "name": "finish",
+        "next": "__end__",
+        "iteration": 5,
+        "status": "completed"
+      }
+    }
+  ],
+  "usd_cost": null,
+  "evidence": {
+    "7f5221c4664abd7ee5c424049f41ae5a": {
+      "rows": [
+        {
+          "domain": "retail",
+          "period": "current",
+          "value": 130.0,
+          "cost": 52.0
+        },
+        {
+          "domain": "retail",
+          "period": "previous",
+          "value": 100.0,
+          "cost": 44.0
+        }
+      ]
+    },
+    "42d1dc48c0ea27101aaefd2cd8eaaeef": {
+      "value": 30.0
+    },
+    "83a62e5320af0765632b6a701cea7c06": {
+      "documents": [
+        {
+          "id": "retail-market",
+          "url": "fixture://retail/market",
+          "text": "retail market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.",
+          "score": 4
+        },
+        {
+          "id": "retail-policy",
+          "url": "fixture://retail/policy",
+          "text": "retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+          "score": 3
+        },
+        {
+          "id": "logistics-market",
+          "url": "fixture://logistics/market",
+          "text": "logistics market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly.",
+          "score": 3
+        }
+      ]
+    },
+    "18d348e7b14ae37d6bab1277e0584427": {
+      "documents": [
+        {
+          "id": "retail-policy",
+          "url": "fixture://retail/policy",
+          "text": "retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+          "score": 3
+        },
+        {
+          "id": "logistics-policy",
+          "url": "fixture://logistics/policy",
+          "text": "logistics policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+          "score": 2
+        },
+        {
+          "id": "education-policy",
+          "url": "fixture://education/policy",
+          "text": "education policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring.",
+          "score": 2
+        }
+      ]
+    },
+    "3db482b4ba7ae38e039883bb4d96b8b0": {
+      "value": 30.0
+    }
+  }
+}

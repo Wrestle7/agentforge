@@ -1,0 +1,5948 @@
+[
+  {
+    "id": "retail-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        30.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        160,
+        144.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        56.0,
+        50.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        121.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.7333333333333334
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        20.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "retail-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic retail business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "retail market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "retail"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "retail policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.22727272727272707,
+        0.20454545454545436
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        29.166666666666668
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        190,
+        171.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        66.0,
+        59.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        144.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.7714285714285714
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        24.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "logistics-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic logistics business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "logistics market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "logistics"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "logistics policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.2777777777777777,
+        0.24999999999999992
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        28.57142857142857
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        220,
+        198.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        76.0,
+        68.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        168.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        28.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "education-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic education business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "education market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "education"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "education policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.3125,
+        0.28125
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        28.125
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        250,
+        225.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        86.0,
+        77.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        191.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.8222222222222222
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        32.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "energy-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic energy business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "energy market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "energy"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "energy policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.3378378378378377,
+        0.30405405405405395
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        27.77777777777778
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        280,
+        252.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        96.0,
+        86.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        215.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.84
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        36.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "manufacturing-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic manufacturing business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "manufacturing market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "manufacturing"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "manufacturing policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.3571428571428572,
+        0.3214285714285715
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-growth",
+    "category": "growth",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute percentage growth between previous/current periods and review rollout policy. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute percentage growth between previous/current periods and review rollout policy.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - previous) / previous * 100",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        27.500000000000004
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-unit_cost",
+    "category": "unit_cost",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute current cost per unit and compare it with the previous period; explain constraints. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current cost per unit and compare it with the previous period; explain constraints.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / current",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-margin",
+    "category": "margin",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute current absolute margin and margin percent; assess expansion evidence. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute current absolute margin and margin percent; assess expansion evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "(current - cost) / current * 100",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        60.0,
+        54.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-forecast",
+    "category": "forecast",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Forecast next-period value by extending the observed absolute change; discuss seasonality. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Forecast next-period value by extending the observed absolute change; discuss seasonality.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current + (current - previous)",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        310,
+        279.0
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-capacity",
+    "category": "capacity",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Estimate extra capacity for a 20 percent current-volume increase and compare baseline. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Estimate extra capacity for a 20 percent current-volume increase and compare baseline.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current * 1.2 - previous",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        106.0,
+        95.4
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-cost_shock",
+    "category": "cost_shock",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Stress-test unit cost if current cost rises 25 percent and current volume falls 10 percent.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost * 1.25 / (current * 0.9)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.5555555555555556,
+        0.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-weighted",
+    "category": "weighted",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute a 30/70 weighted previous/current forecast and compare with policy evidence. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute a 30/70 weighted previous/current forecast and compare with policy evidence.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "previous * 0.3 + current * 0.7",
+          "variables": {
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        238.5
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-payback",
+    "category": "payback",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute cost divided by incremental period value as a simple payback proxy; state limitations. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute cost divided by incremental period value as a simple payback proxy; state limitations.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / (current - previous)",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        1.8545454545454545
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-break_even",
+    "category": "break_even",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute added volume required to cover current cost at a unit contribution of 2.5. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute added volume required to cover current cost at a unit contribution of 2.5.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "cost / 2.5",
+          "variables": {
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        40.8
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  },
+  {
+    "id": "support-efficiency",
+    "category": "efficiency",
+    "dataset_kind": "synthetic",
+    "goal": "For the synthetic support business: Compute change in value per unit cost between periods; assess evidence for efficiency gains. Also compute minus-10-percent sensitivity on the derived result. Read both periods and cite market and policy evidence.",
+    "fixture_plan": [
+      {
+        "id": "market",
+        "objective": "Find market caveats",
+        "capability": "web",
+        "dependencies": [],
+        "tool": "web.search",
+        "arguments": {
+          "query": "support market growth"
+        }
+      },
+      {
+        "id": "previous",
+        "objective": "Read previous period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='previous'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "current",
+        "objective": "Read current period metrics",
+        "capability": "sql",
+        "dependencies": [],
+        "tool": "sql.query",
+        "arguments": {
+          "query": "SELECT value,cost FROM metrics WHERE domain=:domain AND period='current'",
+          "params": {
+            "domain": "support"
+          }
+        }
+      },
+      {
+        "id": "calculation",
+        "objective": "Compute change in value per unit cost between periods; assess evidence for efficiency gains.",
+        "capability": "code",
+        "dependencies": [
+          "previous",
+          "current"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "current / cost - previous / previous_cost",
+          "variables": {
+            "current": {
+              "$ref": "current.rows.0.value"
+            },
+            "cost": {
+              "$ref": "current.rows.0.cost"
+            },
+            "previous": {
+              "$ref": "previous.rows.0.value"
+            },
+            "previous_cost": {
+              "$ref": "previous.rows.0.cost"
+            }
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "objective": "Retrieve independent policy and operational caveats",
+        "capability": "rag",
+        "dependencies": [
+          "market"
+        ],
+        "tool": "rag.search",
+        "arguments": {
+          "query": "support policy operations"
+        }
+      },
+      {
+        "id": "sensitivity",
+        "objective": "Compute a minus-10-percent sensitivity on the derived result",
+        "capability": "code",
+        "dependencies": [
+          "calculation",
+          "policy"
+        ],
+        "tool": "code.calculate",
+        "arguments": {
+          "expression": "result * 0.9",
+          "variables": {
+            "result": {
+              "$ref": "calculation.value"
+            }
+          }
+        }
+      }
+    ],
+    "gold": {
+      "expected_values": [
+        0.37234042553191493,
+        0.33510638297872347
+      ],
+      "min_sources": 2,
+      "relevant_tools": [
+        "web.search",
+        "rag.search",
+        "sql.query",
+        "code.calculate"
+      ]
+    }
+  }
+]

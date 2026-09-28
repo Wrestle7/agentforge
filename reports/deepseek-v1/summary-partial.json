@@ -1,0 +1,46 @@
+{
+  "react": {
+    "n": 8,
+    "task_success": 0.5,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 6.25,
+    "invalid_tool_calls": 2.25,
+    "trajectory_length": 10.25,
+    "execution_rounds": 6.25,
+    "latency_ms": 25439.79388475418,
+    "token_cost": 13006
+  },
+  "no_critic": {
+    "n": 7,
+    "task_success": 0.14285714285714285,
+    "tool_selection_accuracy": 0.9795918367346939,
+    "tool_calls": 3,
+    "invalid_tool_calls": 0.7142857142857143,
+    "trajectory_length": 10.285714285714286,
+    "execution_rounds": 3,
+    "latency_ms": 13089.26374571664,
+    "token_cost": 6497.285714285715
+  },
+  "no_memory": {
+    "n": 5,
+    "task_success": 0.4,
+    "tool_selection_accuracy": 1.0,
+    "tool_calls": 7.2,
+    "invalid_tool_calls": 1.2,
+    "trajectory_length": 27.2,
+    "execution_rounds": 7.2,
+    "latency_ms": 54614.33382034302,
+    "token_cost": 39204.8
+  },
+  "full": {
+    "n": 7,
+    "task_success": 0.14285714285714285,
+    "tool_selection_accuracy": 0.9536178107606679,
+    "tool_calls": 8.714285714285714,
+    "invalid_tool_calls": 2.2857142857142856,
+    "trajectory_length": 31.857142857142858,
+    "execution_rounds": 8.714285714285714,
+    "latency_ms": 63790.51205090114,
+    "token_cost": 49315.42857142857
+  }
+}

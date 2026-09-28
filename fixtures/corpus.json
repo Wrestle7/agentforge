@@ -1,0 +1,92 @@
+[
+  {
+    "id": "retail-market",
+    "url": "fixture://retail/market",
+    "text": "retail market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "retail-policy",
+    "url": "fixture://retail/policy",
+    "text": "retail policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "retail-operations",
+    "url": "fixture://retail/operations",
+    "text": "retail operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  },
+  {
+    "id": "logistics-market",
+    "url": "fixture://logistics/market",
+    "text": "logistics market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "logistics-policy",
+    "url": "fixture://logistics/policy",
+    "text": "logistics policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "logistics-operations",
+    "url": "fixture://logistics/operations",
+    "text": "logistics operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  },
+  {
+    "id": "education-market",
+    "url": "fixture://education/market",
+    "text": "education market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "education-policy",
+    "url": "fixture://education/policy",
+    "text": "education policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "education-operations",
+    "url": "fixture://education/operations",
+    "text": "education operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  },
+  {
+    "id": "energy-market",
+    "url": "fixture://energy/market",
+    "text": "energy market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "energy-policy",
+    "url": "fixture://energy/policy",
+    "text": "energy policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "energy-operations",
+    "url": "fixture://energy/operations",
+    "text": "energy operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  },
+  {
+    "id": "manufacturing-market",
+    "url": "fixture://manufacturing/market",
+    "text": "manufacturing market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "manufacturing-policy",
+    "url": "fixture://manufacturing/policy",
+    "text": "manufacturing policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "manufacturing-operations",
+    "url": "fixture://manufacturing/operations",
+    "text": "manufacturing operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  },
+  {
+    "id": "support-market",
+    "url": "fixture://support/market",
+    "text": "support market growth: demand is seasonal. Validate trends using both periods; do not extrapolate blindly."
+  },
+  {
+    "id": "support-policy",
+    "url": "fixture://support/policy",
+    "text": "support policy risk: synthetic deployment requires growth >= 10 percent, cost review, and pilot monitoring."
+  },
+  {
+    "id": "support-operations",
+    "url": "fixture://support/operations",
+    "text": "support operations forecast: capacity is constrained; compare unit cost and margin before rollout."
+  }
+]

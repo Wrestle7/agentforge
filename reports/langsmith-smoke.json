@@ -1,0 +1,246 @@
+{
+  "kind": "synthetic AgentForge workflow with real cloud trace",
+  "project": "agentforge",
+  "workflow_status": "completed",
+  "cloud_readback": true,
+  "cloud_run_count": 47,
+  "tool_runs": 5,
+  "runs": [
+    {
+      "name": "agentforge_task",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "LangGraph",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "recall",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "planner",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "researcher",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "tool_gateway",
+      "type": "tool",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "critic",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "executor",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "tool_gateway",
+      "type": "tool",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "critic",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "executor",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "tool_gateway",
+      "type": "tool",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "critic",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "executor",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "tool_gateway",
+      "type": "tool",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "critic",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "researcher",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "tool_gateway",
+      "type": "tool",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "critic",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "scheduler",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "synthesizer",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "finish",
+      "type": "chain",
+      "error": false
+    },
+    {
+      "name": "RunnableCallable",
+      "type": "chain",
+      "error": false
+    }
+  ],
+  "private_trace_details": "data/langsmith-smoke.private.json (not published)"
+}

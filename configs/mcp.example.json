@@ -1,0 +1,6 @@
+{
+  "transport": "stdio",
+  "command": ".venv/Scripts/python.exe",
+  "args": ["-m", "agentforge.sample_mcp"],
+  "allow_tools": ["policy_lookup"]
+}

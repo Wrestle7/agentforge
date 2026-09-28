@@ -1,0 +1,25 @@
+{
+  "already_migrated_before_final_resume": 291,
+  "resume": {
+    "source": "af_memory",
+    "target": "af_memory_110a382bff065a06",
+    "copied": 46,
+    "skipped": 291
+  },
+  "repeat": {
+    "source": "af_memory",
+    "target": "af_memory_110a382bff065a06",
+    "copied": 0,
+    "skipped": 337
+  },
+  "legacy_rows_preserved": 337,
+  "migrated_rows": 337,
+  "actual_failure_recovered": "Network failure (ConnectError) interrupted migration; external network probe returned HTTP 401 without credentials; resumed committed progress.",
+  "driver_rowcount_before_fix": {
+    "source": "af_memory",
+    "target": "af_memory_110a382bff065a06",
+    "copied": -46,
+    "skipped": 383
+  },
+  "migration_count_fix": "psycopg rowcount=-1 replaced with INSERT RETURNING. Resume counts reconciled against DB IDs; fresh PG insert test passed."
+}

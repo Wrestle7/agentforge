@@ -1,0 +1,29 @@
+{
+  "started_at": "2026-09-28T08:32:10.634252+00:00",
+  "completed_at": "2026-09-28T08:54:57.187198+00:00",
+  "dataset_kind": "synthetic",
+  "mode": "live",
+  "tool_mode": "fixture",
+  "workers": 8,
+  "repeats": 1,
+  "model": "deepseek-v4-flash",
+  "python": "3.13.5",
+  "case_count": 60,
+  "case_sha256": "af68f77299b1d89c32181c49d82f6687cbdc8b10530c58bf4138ee406b9b1798",
+  "trace_sha256": "00704383fac45bc00eae929226abc196ca58167bc8f89eaed692805398816977",
+  "scorer_version": 2,
+  "source_sha256": "8284243dd5ba29ebbc1de5bbde3ddb3e7c6054f40df17610fb60c38f5c69b06e",
+  "interrupted": false,
+  "limits": {
+    "max_tokens": 120000,
+    "max_iterations": 20,
+    "max_tool_calls": 40,
+    "max_seconds": 600.0
+  },
+  "limitations": [
+    "fixture mode uses scripted plans, not a language model",
+    "success is numeric + source coverage proxy, not open-domain research quality",
+    "tool selection accuracy uses per-task relevant-tool labels, not per-decision oracle",
+    "cold namespaced memory prevents leakage; no_memory effect requires a separate warm-memory study"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "status": "aborted_for_bug_fix",
+  "completed_runs": 27,
+  "not_formal_comparison": true,
+  "reason": "Missing tool output descriptions and pre-execution dependency reference recovery; fixes covered by regression tests."
+}

@@ -1,0 +1,18 @@
+{
+  "started_at": "2026-09-28T08:16:14.570989+00:00",
+  "completed_at": "2026-09-28T08:17:36.064080+00:00",
+  "dataset_kind": "synthetic",
+  "mode": "fixture",
+  "repeats": 1,
+  "model": null,
+  "python": "3.13.5",
+  "case_count": 60,
+  "case_sha256": "af68f77299b1d89c32181c49d82f6687cbdc8b10530c58bf4138ee406b9b1798",
+  "trace_sha256": "75099ee7f13921d0132c4f6c49207b82d22c023340dc64bdfb5dfa8276235d1c",
+  "limitations": [
+    "fixture mode uses scripted plans, not a language model",
+    "success is numeric + source coverage proxy, not open-domain research quality",
+    "tool selection accuracy uses per-task relevant-tool labels, not per-decision oracle",
+    "cold namespaced memory prevents leakage; no_memory effect requires a separate warm-memory study"
+  ]
+}

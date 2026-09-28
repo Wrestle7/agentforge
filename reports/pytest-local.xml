@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="1" tests="25" time="10.223" timestamp="2026-09-28T16:15:39.161453+08:00" hostname="redacted"><testcase classname="tests.test_evaluation" name="test_dataset_has_sixty_valid_cases" time="0.003" /><testcase classname="tests.test_evaluation" name="test_gold_grader_rejects_wrong_output" time="0.493" /><testcase classname="tests.test_evaluation" name="test_replay_matches_original" time="1.438" /><testcase classname="tests.test_postgres" name="test_postgres_checkpoint_and_vector" time="0.000"><skipped type="pytest.skip" message="set AF_TEST_POSTGRES_URL for real pgvector test">D:\project\agent\agent4interview\agentforge\tests\test_postgres.py:12: set AF_TEST_POSTGRES_URL for real pgvector test</skipped></testcase><testcase classname="tests.test_runtime" name="test_dag_rejects_cycles_and_unknown_refs" time="0.088" /><testcase classname="tests.test_runtime" name="test_complete_chain[full]" time="0.503" /><testcase classname="tests.test_runtime" name="test_complete_chain[react]" time="0.283" /><testcase classname="tests.test_runtime" name="test_complete_chain[no_critic]" time="0.447" /><testcase classname="tests.test_runtime" name="test_complete_chain[no_memory]" time="0.590" /><testcase classname="tests.test_runtime" name="test_pause_and_resume_in_new_runtime" time="0.662" /><testcase classname="tests.test_runtime" name="test_iteration_limit" time="0.324" /><testcase classname="tests.test_runtime" name="test_gateway_fallback_after_timeout" time="0.687" /><testcase classname="tests.test_runtime" name="test_retry_replan_terminate_routes" time="0.917" /><testcase classname="tests.test_runtime" name="test_no_critic_ablation_fails_after_gateway_exhausted" time="0.323" /><testcase classname="tests.test_runtime" name="test_memory_namespaces_and_ablation" time="1.952" /><testcase classname="tests.test_runtime" name="test_total_call_budget_includes_retries" time="0.239" /><testcase classname="tests.test_runtime" name="test_cannot_overwrite_existing_run" time="0.508" /><testcase classname="tests.test_tools" name="test_expression_boundary[__import__('os').system('echo bad')]" time="0.001" /><testcase classname="tests.test_tools" name="test_expression_boundary[2**99999999]" time="0.000" /><testcase classname="tests.test_tools" name="test_expression_boundary[[1]*1000000]" time="0.001" /><testcase classname="tests.test_tools" name="test_expression_boundary[x.__class__]" time="0.001" /><testcase classname="tests.test_tools" name="test_sql_readonly_and_empty" time="0.100" /><testcase classname="tests.test_tools" name="test_real_timeout_cancels_coroutine" time="0.024" /><testcase classname="tests.test_tools" name="test_schema_unknown_tools_and_empty" time="0.105" /><testcase classname="tests.test_tools" name="test_mcp_real_stdio_protocol" time="0.462"><failure message="McpError('Connection closed') [single exception in ExceptionGroup]">+ Exception Group Traceback (most recent call last):
+  |   File "D:\project\agent\agent4interview\agentforge\tests\test_tools.py", line 49, in test_mcp_real_stdio_protocol
+  |     await gateway.register(runtime.registry)
+  |   File "D:\project\agent\agent4interview\agentforge\src\agentforge\mcp_gateway.py", line 32, in register
+  |     async with self.session() as session:
+  |                ~~~~~~~~~~~~^^
+  |   File "D:\IDE\Python3_13_5\Lib\contextlib.py", line 214, in __aenter__
+  |     return await anext(self.gen)
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "D:\project\agent\agent4interview\agentforge\src\agentforge\mcp_gateway.py", line 21, in session
+  |     async with stdio_client(params) as (read, write):
+  |                ~~~~~~~~~~~~^^^^^^^^
+  |   File "D:\IDE\Python3_13_5\Lib\contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\mcp\client\stdio\__init__.py", line 183, in stdio_client
+  |     anyio.create_task_group() as tg,
+  |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\mcp\client\stdio\__init__.py", line 189, in stdio_client
+    |     yield read_stream, write_stream
+    |   File "D:\project\agent\agent4interview\agentforge\src\agentforge\mcp_gateway.py", line 22, in session
+    |     async with ClientSession(read, write, read_timeout_seconds=timedelta(seconds=10)) as session:
+    |                ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\mcp\shared\session.py", line 238, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 847, in __aexit__
+    |     raise BaseExceptionGroup(
+    |         "unhandled errors in a TaskGroup", self._exceptions
+    |     ) from None
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "D:\project\agent\agent4interview\agentforge\src\agentforge\mcp_gateway.py", line 23, in session
+      |     await session.initialize()
+      |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\mcp\client\session.py", line 183, in initialize
+      |     result = await self.send_request(
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^
+      |     ...&lt;16 lines&gt;...
+      |     )
+      |     ^
+      |   File "D:\project\agent\agent4interview\.venv\Lib\site-packages\mcp\shared\session.py", line 306, in send_request
+      |     raise McpError(response_or_error.error)
+      | mcp.shared.exceptions.McpError: Connection closed
+      +------------------------------------</failure></testcase></testsuite></testsuites>

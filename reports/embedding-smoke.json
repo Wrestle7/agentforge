@@ -1,0 +1,44 @@
+{
+  "kind": "synthetic semantic retrieval smoke; not the task benchmark",
+  "backend": "api",
+  "model": "text-embedding-v4",
+  "dimension": 1024,
+  "database": "sqlite",
+  "memory_table": "af_memory_110a382bff065a06",
+  "queries": 6,
+  "top1_hits": 5,
+  "namespace_isolation": true,
+  "elapsed_seconds": 29.163,
+  "rows": [
+    {
+      "expected": "checkpoint",
+      "actual": "checkpoint",
+      "success": true
+    },
+    {
+      "expected": "retry",
+      "actual": "retry",
+      "success": true
+    },
+    {
+      "expected": "safety",
+      "actual": "safety",
+      "success": true
+    },
+    {
+      "expected": "context",
+      "actual": "safety",
+      "success": false
+    },
+    {
+      "expected": "vector",
+      "actual": "vector",
+      "success": true
+    },
+    {
+      "expected": "dag",
+      "actual": "dag",
+      "success": true
+    }
+  ]
+}

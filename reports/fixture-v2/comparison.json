@@ -1,0 +1,30 @@
+{
+  "task_success": {
+    "mean_full_minus_react": 0,
+    "cluster_bootstrap_95pct": [
+      0,
+      0
+    ]
+  },
+  "invalid_tool_calls": {
+    "mean_full_minus_react": 0,
+    "cluster_bootstrap_95pct": [
+      0,
+      0
+    ]
+  },
+  "execution_rounds": {
+    "mean_full_minus_react": 0.0,
+    "cluster_bootstrap_95pct": [
+      0,
+      0
+    ]
+  },
+  "token_cost": {
+    "mean_full_minus_react": 0,
+    "cluster_bootstrap_95pct": [
+      0,
+      0
+    ]
+  }
+}

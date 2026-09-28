@@ -1,0 +1,30 @@
+{
+  "task_success": {
+    "mean_full_minus_react": 0.0,
+    "cluster_bootstrap_95pct": [
+      -0.2,
+      0.18333333333333332
+    ]
+  },
+  "invalid_tool_calls": {
+    "mean_full_minus_react": -2.9333333333333336,
+    "cluster_bootstrap_95pct": [
+      -4.5,
+      -1.3
+    ]
+  },
+  "execution_rounds": {
+    "mean_full_minus_react": -0.21666666666666679,
+    "cluster_bootstrap_95pct": [
+      -1.7833333333333334,
+      1.3166666666666667
+    ]
+  },
+  "token_cost": {
+    "mean_full_minus_react": 29911.15,
+    "cluster_bootstrap_95pct": [
+      22577.15,
+      36642.683333333334
+    ]
+  }
+}
